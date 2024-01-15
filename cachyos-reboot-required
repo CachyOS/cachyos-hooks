@@ -24,6 +24,7 @@ _other_reboot_required() {
     for user in $(_get_users) ; do
         userid="$(/usr/bin/id -u "$user")"
         cmd=(
+            /usr/bin/env
             DISPLAY=:0
             DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/${userid}/bus"
             /usr/bin/notify-send
