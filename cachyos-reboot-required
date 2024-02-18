@@ -7,8 +7,9 @@
 _get_users() { /usr/bin/users | sed 's| |\n|g' | sort | uniq ; }
 
 _other_reboot_required() {
-    local msg="Reboot is recommended due to the upgrade of core system package(s)."
+    local header="CachyOS Update"
     local title="Reboot recommended!"
+    local msg="Reboot is recommended due to the upgrade of core system package(s)."
 
     # at TTY
     echo "==> INFO: $msg" >&2
@@ -30,7 +31,7 @@ _other_reboot_required() {
             /usr/bin/notify-send
             --icon=system-reboot
             --urgency=critical
-            --app-name "CachyOS Update"
+            --app-name "'$header'"
             "'$title'"
             "'$msg'"
         )
