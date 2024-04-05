@@ -28,6 +28,7 @@ Target = xorg-fonts*
 Target = mkinitcpio
 Target = booster
 Target = dracut
+Target = proton-cachyos
 
 [Action]
 Description = Check if user should be informed about rebooting after certain system package upgrades.
