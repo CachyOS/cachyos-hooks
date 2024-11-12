@@ -3,8 +3,7 @@ Operation=Install
 Operation=Upgrade
 Operation=Remove
 Type=File
-Target=etc/modprobe.d/nvidia.conf
-Target=usr/src/nvidia-*/dkms.conf
+Target=usr/lib/modprobe.d/nvidia.conf
 Target=usr/lib/modules/*/extramodules/nvidia.ko.*
 Target=usr/lib/modules/*/nvidia.ko.*
 
