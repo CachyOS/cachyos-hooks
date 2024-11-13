@@ -23,7 +23,7 @@ for target in $targets ; do
                 break
             fi
             ;;
-        linuxc-cachyos-nvidia*)
+        linux-cachyos-nvidia*)
             if [[ "$kernelname" = linux-cachyos* ]]; then
                 notify=yes
                 break
