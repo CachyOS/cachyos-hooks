@@ -35,6 +35,18 @@ for target in $targets ; do
                 break
             fi
             ;;
+        xfsprogs)
+            if [ -n "$(mount -t xfs)" ]; then
+                notify=yes
+                break
+            fi
+            ;;
+        e2fsprogs)
+            if [ -n "$(mount -t ext4)" ]; then
+                notify=yes
+                break
+            fi
+            ;;
         *)
             notify=yes
             break

@@ -11,7 +11,7 @@ echo "==> INFO: $msg" >&2
 
 for user in $(users | sed 's| |\n|g' | sort | uniq); do
     # See https://specifications.freedesktop.org/notification-spec/1.2/protocol.html#command-notify
-    busctl --machine="${user}@.host" --json=short --user call org.freedesktop.Notifications \
+    busctl --machine="${user}@.host" --user call org.freedesktop.Notifications \
         /org/freedesktop/Notifications \
         org.freedesktop.Notifications  \
         Notify susssasa\{sv\}i \

@@ -4,6 +4,8 @@ Type = Package
 Target = amd-ucode
 Target = intel-ucode
 Target = btrfs-progs
+Target = e2fsprogs
+Target = xfsprogs
 Target = cryptsetup
 Target = linux
 Target = linux-hardened
@@ -33,6 +35,5 @@ Target = winesync-dkms
 [Action]
 Description = Check if user should be informed about rebooting after certain system package upgrades.
 When = PostTransaction
-Depends = libnotify
 NeedsTargets
 Exec = /usr/bin/cachyos-check-reboot-required
