@@ -1,42 +1,26 @@
-#!/bin/bash
-
+#!/usr/bin/env bash
 # To be called from cachyos-reboot-required.hook.
+# Implementation using busctl.
 
-# Implementation using libnotify.
+header="CachyOS Update"
+title="Reboot recommended!"
+msg="Reboot is recommended due to the upgrade of core system package(s)."
 
-_get_users() { /usr/bin/users | sed 's| |\n|g' | sort | uniq ; }
+# at TTY
+echo "==> INFO: $msg" >&2
 
-_other_reboot_required() {
-    local header="CachyOS Update"
-    local title="Reboot recommended!"
-    local msg="Reboot is recommended due to the upgrade of core system package(s)."
-
-    # at TTY
-    echo "==> INFO: $msg" >&2
-
-    # notification
-    local user userid cmd
-
-    # Don't call notify-send in tty
-    if [[ "$(tty)" =~ /dev/tty.* ]]; then
-        return
-    fi
-
-    for user in $(_get_users) ; do
-        userid="$(/usr/bin/id -u "$user")"
-        cmd=(
-            /usr/bin/env
-            DISPLAY=:0
-            DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/${userid}/bus"
-            /usr/bin/notify-send
-            --icon=system-reboot
-            --urgency=critical
-            --app-name "'$header'"
-            "'$title'"
-            "'$msg'"
-        )
-        /usr/bin/su "$user" -c "${cmd[*]}"
-    done
-}
-_other_reboot_required
-unset -f _other_reboot_required
+for user in $(users | sed 's| |\n|g' | sort | uniq); do
+    # See https://specifications.freedesktop.org/notification-spec/1.2/protocol.html#command-notify
+    busctl --machine="${user}@.host" --json=short --user call org.freedesktop.Notifications \
+        /org/freedesktop/Notifications \
+        org.freedesktop.Notifications  \
+        Notify susssasa\{sv\}i \
+        "$header" \
+        0 \
+        system-reboot \
+        "$title" \
+        "$msg" \
+        0 \
+        1 urgency y 0x2 \
+        10000 &>/dev/null
+done
