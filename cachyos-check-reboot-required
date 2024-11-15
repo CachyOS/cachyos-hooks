@@ -8,52 +8,21 @@ kernelname="$(cat /lib/modules/"$(uname -r)"/pkgbase)"
 for target in $targets ; do
     case "$target" in
         "$kernelname")
-            notify=yes
-            break
-            ;;
+            notify=yes ;;
         nvidia)
-            if [ "$kernelname" = "linux" ]; then
-                notify=yes
-                break
-            fi
-            ;;
+            [ "$kernelname" = "linux" ] && notify=yes ;;
         nvidia-lts)
-            if [ "$kernelname" = "linux-lts" ]; then
-                notify=yes
-                break
-            fi
-            ;;
+            [ "$kernelname" = "linux-lts" ] && notify=yes ;;
         linux-cachyos-nvidia*)
-            if [[ "$kernelname" = linux-cachyos* ]]; then
-                notify=yes
-                break
-            fi
-            ;;
+            [[ "$kernelname" = linux-cachyos* ]] && notify=yes ;;
         btrfs-progs)
-            if [ -n "$(mount -t btrfs)" ]; then
-                notify=yes
-                break
-            fi
-            ;;
+            [ -n "$(mount -t btrfs)" ] && notify=yes ;;
         xfsprogs)
-            if [ -n "$(mount -t xfs)" ]; then
-                notify=yes
-                break
-            fi
-            ;;
+            [ -n "$(mount -t xfs)" ] && notify=yes ;;
         e2fsprogs)
-            if [ -n "$(mount -t ext4)" ]; then
-                notify=yes
-                break
-            fi
-            ;;
-        *)
-            notify=yes
-            break
-            ;;
+            [ -n "$(mount -t ext4)" ] && notify=yes ;;
+        *) notify=yes ;;
     esac
 done
 
-if [ -n "$notify" ] ; then
-    exec /usr/bin/cachyos-reboot-required
-fi
+[ -n "$notify" ] && exec /usr/bin/cachyos-reboot-required
