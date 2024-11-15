@@ -3,7 +3,7 @@
 # - not currently running (e.g. alternative kernel)
 # - not in use (e.g. alternative driver)
 targets=$(tee /dev/null)  # targets from the hook (stdin)
-kernelname="$(cat /lib/modules/"$(uname -r)"/pkgbase)"
+kernelname="$(grep -oP '\(\K.*(?=@.*\))' /proc/version)"
 
 for target in $targets ; do
     case "$target" in
