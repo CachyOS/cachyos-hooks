@@ -2,27 +2,29 @@
 # Avoid unnecessary reboots: don't notify if an updated package is
 # - not currently running (e.g. alternative kernel)
 # - not in use (e.g. alternative driver)
+
+_notify() {
+    exec /usr/bin/cachyos-reboot-required
+}
+
 targets=$(tee /dev/null)  # targets from the hook (stdin)
 kernelname="$(grep -oP '\(\K.*(?=@.*\))' /proc/version)"
 
 for target in $targets ; do
     case "$target" in
-        "$kernelname")
-            notify=yes ;;
+        "$kernelname") _notify;;
         nvidia)
-            [ "$kernelname" = "linux" ] && notify=yes ;;
+            [ "$kernelname" = "linux" ] && _notify;;
         nvidia-lts)
-            [ "$kernelname" = "linux-lts" ] && notify=yes ;;
+            [ "$kernelname" = "linux-lts" ] && _notify;;
         linux-cachyos-nvidia*)
-            [[ "$kernelname" = linux-cachyos* ]] && notify=yes ;;
+            [[ "$kernelname" = linux-cachyos* ]] && _notify;;
         btrfs-progs)
-            [ -n "$(mount -t btrfs)" ] && notify=yes ;;
+            [ -n "$(mount -t btrfs)" ] && _notify;;
         xfsprogs)
-            [ -n "$(mount -t xfs)" ] && notify=yes ;;
+            [ -n "$(mount -t xfs)" ] && _notify;;
         e2fsprogs)
-            [ -n "$(mount -t ext4)" ] && notify=yes ;;
-        *) notify=yes ;;
+            [ -n "$(mount -t ext4)" ] && _notify;;
+        *) _notify ;;
     esac
 done
-
-[ -n "$notify" ] && exec /usr/bin/cachyos-reboot-required
