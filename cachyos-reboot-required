@@ -22,5 +22,5 @@ for user in $(users | sed 's| |\n|g' | sort | uniq); do
         "$msg" \
         0 \
         1 urgency y 0x2 \
-        10000 &>/dev/null
+        10000 &>/dev/null || true
 done
