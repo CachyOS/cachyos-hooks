@@ -1,26 +1,52 @@
 #!/usr/bin/env bash
-# To be called from cachyos-reboot-required.hook.
-# Implementation using busctl.
+# Avoid unnecessary reboots: don't notify if an updated package is
+# - not currently running (e.g. alternative kernel)
+# - not in use (e.g. alternative driver)
 
-header="CachyOS Update"
-title="Reboot recommended!"
-msg="Reboot is recommended due to the upgrade of core system package(s)."
+kernelname="$(grep -oP '\(\K.*(?=@.*\))' /proc/version)"
 
-# at TTY
-echo "==> INFO: $msg" >&2
+_notify() {
+    local header="CachyOS Update"
+    local title="Reboot recommended!"
+    local msg="Reboot is recommended due to the upgrade of core system package(s)."
 
-for user in $(users | sed 's| |\n|g' | sort | uniq); do
-    # See https://specifications.freedesktop.org/notification-spec/1.2/protocol.html#command-notify
-    busctl --machine="${user}@.host" --user call org.freedesktop.Notifications \
-        /org/freedesktop/Notifications \
-        org.freedesktop.Notifications  \
-        Notify susssasa\{sv\}i \
-        "$header" \
-        0 \
-        system-reboot \
-        "$title" \
-        "$msg" \
-        0 \
-        1 urgency y 0x2 \
-        10000 &>/dev/null || true
+    # at TTY
+    echo "==> INFO: $msg" >&2
+
+    for user in $(users | sed 's| |\n|g' | sort | uniq); do
+        # See https://specifications.freedesktop.org/notification-spec/1.2/protocol.html#command-notify
+        busctl --machine="${user}@.host" --user call org.freedesktop.Notifications \
+            /org/freedesktop/Notifications \
+            org.freedesktop.Notifications  \
+            Notify susssasa\{sv\}i \
+            "$header" \
+            0 \
+            system-reboot \
+            "$title" \
+            "$msg" \
+            0 \
+            1 urgency y 0x2 \
+            10000 &>/dev/null
+    done
+}
+
+while read -r target; do
+    case "$target" in
+        "$kernelname") _notify;;
+        nvidia)
+            [ "$kernelname" = "linux" ] && _notify;;
+        nvidia-lts)
+            [ "$kernelname" = "linux-lts" ] && _notify;;
+        linux-cachyos-nvidia*)
+            [[ "$kernelname" = linux-cachyos* ]] && _notify;;
+        btrfs-progs)
+            [ -n "$(mount -t btrfs)" ] && _notify;;
+        xfsprogs)
+            [ -n "$(mount -t xfs)" ] && _notify;;
+        e2fsprogs)
+            [ -n "$(mount -t ext4)" ] && _notify;;
+        *) _notify ;;
+    esac
 done
+
+exit 0
