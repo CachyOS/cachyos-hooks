@@ -36,4 +36,4 @@ Target = winesync-dkms
 Description = Check if user should be informed about rebooting after certain system package upgrades.
 When = PostTransaction
 NeedsTargets
-Exec = /usr/bin/cachyos-check-reboot-required
+Exec = /usr/bin/cachyos-reboot-required
