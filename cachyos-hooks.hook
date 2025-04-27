@@ -7,5 +7,4 @@ Target = cachyos-hooks
 [Action]
 Description = Updating Cachy OS specific configuration.
 When = PostTransaction
-Depends = mkinitcpio
 Exec = /usr/bin/cachyos-hooks-runner
