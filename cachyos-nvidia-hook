@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+if command -v limine-mkinitcpio >/dev/null 2>&1; then
+    limine-mkinitcpio
+elif command -v mkinitcpio >/dev/null 2>&1; then
+    mkinitcpio -P
+elif command -v /usr/lib/booster/regenerate_images >/dev/null 2>&1; then
+    /usr/lib/booster/regenerate_images
+elif command -v dracut-rebuild >/dev/null 2>&1; then
+    dracut-rebuild
+else
+    printf "\\033[31m The initramfs generator was not found, please update initramfs manually\\033[0m\\n"
+fi
