@@ -1,4 +1,9 @@
 #!/usr/bin/env bash
+if ((EUID != 0)); then
+    echo "This script should be run as root" >&2
+    exit 1
+fi
+
 if command -v limine-mkinitcpio >/dev/null 2>&1; then
     limine-mkinitcpio
 elif command -v mkinitcpio >/dev/null 2>&1; then
