@@ -7,4 +7,4 @@ Target = filesystem
 [Action]
 Description = Add CachyOS specific config.
 When = PostTransaction
-Exec = /usr/share/libalpm/scripts/cachyos-branding
+Exec = /usr/share/libalpm/scripts/cachyos-branding os-release

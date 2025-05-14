@@ -7,4 +7,4 @@ Target = lsb-release
 [Action]
 Description = Updating CachyOS specific configuration.
 When = PostTransaction
-Exec = /usr/share/libalpm/scripts/cachyos-branding
+Exec = /usr/share/libalpm/scripts/cachyos-branding lsb-release
