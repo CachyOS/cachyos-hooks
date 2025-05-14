@@ -10,4 +10,4 @@ Target=usr/lib/modules/*/nvidia.ko.*
 [Action]
 Description=Update Nvidia module in initcpio (for DRM KMS)
 When=PostTransaction
-Exec=/usr/bin/cachyos-nvidia-hook
+Exec=/usr/bin/update-initramfs
