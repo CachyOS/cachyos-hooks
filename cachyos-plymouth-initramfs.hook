@@ -1,0 +1,11 @@
+[Trigger]
+Operation = Upgrade
+Operation = Install
+Operation = Remove
+Type = Package
+Target = plymouth
+
+[Action]
+Description = Fix plymouth script to update initramfs
+When = PostTransaction
+Exec = /usr/bin/sh -c 'ln -s -f /usr/bin/update-initramfs /usr/lib/plymouth/plymouth-update-initrd 2>/dev/null || true'
