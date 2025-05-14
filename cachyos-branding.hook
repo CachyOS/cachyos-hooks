@@ -5,6 +5,6 @@ Type = Package
 Target = cachyos-hooks
 
 [Action]
-Description = Updating Cachy OS specific configuration.
+Description = Updating CachyOS specific configuration.
 When = PostTransaction
-Exec = /usr/bin/cachyos-hooks-runner
+Exec = /usr/share/libalpm/scripts/cachyos-branding

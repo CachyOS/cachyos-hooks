@@ -1,20 +1,15 @@
-#!/bin/bash
-
+#!/usr/bin/env bash
 # Run cachyos hooks related commands.
 
-Lsb_release() {
-    local file=/etc/lsb-release
-
-    sed -i $file \
+update_lsb_release() {
+    sed -i /etc/lsb-release \
         -e 's|^DISTRIB_ID=.*$|DISTRIB_ID=cachyos|' \
         -e 's|^DISTRIB_DESCRIPTION=.*$|DISTRIB_DESCRIPTION=\"CachyOS\"|'
 }
 
-Os_release() {
-    local file=/etc/os-release
-    local cachyosfile=/usr/lib/cachyos-release
-
-    sed -i $file \
+update_os_release() {
+    local os_release="/etc/os-release"
+    sed -i "$os_release" \
         -e 's|^NAME=.*$|NAME=\"CachyOS Linux\"|' \
         -e 's|^PRETTY_NAME=.*$|PRETTY_NAME=\"CachyOS\"|' \
         -e 's|^ID=.*$|ID=cachyos|' \
@@ -26,34 +21,22 @@ Os_release() {
         -e 's|^BUG_REPORT_URL=.*$|BUG_REPORT_URL=\"https://github.com/cachyos\"|' \
         -e 's|^LOGO=.*$|LOGO=cachyos|'
 
-    if [ -z "$(grep "^ID_LIKE=" $file)" ] && [ -n "$(grep "^ID=" $file)" ] ; then
-        # add missing ID_LIKE=
-        sed -i $file -e '/^ID=/a \ID_LIKE=arch'
-    fi
-
-    if [ -r $cachyosfile ] ; then
-        # fix BUILD_ID for Cachy OS
-        local buildid="$(grep "^VERSION=" $cachyosfile | awk '{print $1}' | cut -d '=' -f 2)"
-        sed -i $file -e "s|^BUILD_ID=.*$|BUILD_ID=$buildid|"
+    # add missing ID_LIKE=
+    if ! grep -q "^ID_LIKE=" "$os_release" && ! grep -q "^ID=" "$os_release"; then
+        sed -i "$os_release" -e '/^ID=/a \ID_LIKE=arch'
     fi
 }
 
-Issues() {
+update_issues() {
     sed -i 's|Arch Linux|CachyOS Linux|g' /etc/issue /usr/share/factory/etc/issue
 }
 
-Main()
-{
-    local hookname="$1"
-
-    case "$hookname" in
-        os-release)  Os_release ;;
-        lsb-release) Lsb_release ;;
-        "")          Os_release
-                     Lsb_release
-                     Issues
-                     ;;
-    esac
-}
-
-Main "$@"
+case "$1" in
+    os-release) update_os_release ;;
+    lsb-release) update_lsb_release ;;
+    *)
+        update_os_release
+        update_lsb_release
+        update_issues
+        ;;
+esac
