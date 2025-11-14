@@ -22,7 +22,7 @@ update_os_release() {
         -e 's|^LOGO=.*$|LOGO=cachyos|'
 
     # add missing ID_LIKE=
-    if ! grep -q "^ID_LIKE=" "$os_release" && ! grep -q "^ID=" "$os_release"; then
+    if ! grep -q "^ID_LIKE=" "$os_release" && grep -q "^ID=" "$os_release"; then
         sed -i "$os_release" -e '/^ID=/a \ID_LIKE=arch'
     fi
 }
