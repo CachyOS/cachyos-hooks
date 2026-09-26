@@ -10,6 +10,6 @@ elif command -v dracut >/dev/null 2>&1; then
 elif [ -x /usr/lib/booster/regenerate_images ]; then
 	/usr/lib/booster/regenerate_images
 else
-	echo 'Could not find a supported initramfs generator. Please regenerate your initramfs manually.'
+	echo 'Could not find a supported initramfs generator. Please regenerate your initramfs manually.' >&2
 	exit 1
 fi
