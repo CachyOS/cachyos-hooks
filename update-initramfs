@@ -11,5 +11,5 @@ elif [ -x /usr/lib/booster/regenerate_images ]; then
 	/usr/lib/booster/regenerate_images
 else
 	echo 'Could not find a supported initramfs generator. Please regenerate your initramfs manually.'
-	exit 127
+	exit 1
 fi
