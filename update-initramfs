@@ -7,7 +7,7 @@ elif command -v limine-dracut >/dev/null 2>&1; then
 	limine-dracut
 elif command -v dracut >/dev/null 2>&1; then
 	dracut --regenerate-all --force
-elif command -v /usr/lib/booster/regenerate_images >/dev/null 2>&1; then
+elif [ -x /usr/lib/booster/regenerate_images ]; then
 	/usr/lib/booster/regenerate_images
 else
 	echo 'Could not find a supported initramfs generator. Please regenerate your initramfs manually.'
