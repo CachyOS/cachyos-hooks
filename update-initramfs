@@ -1,15 +1,15 @@
 #!/bin/sh
 if command -v limine-mkinitcpio >/dev/null 2>&1; then
-	limine-mkinitcpio
+    limine-mkinitcpio
 elif command -v mkinitcpio >/dev/null 2>&1; then
-	mkinitcpio --allpresets
+    mkinitcpio --allpresets
 elif command -v limine-dracut >/dev/null 2>&1; then
-	limine-dracut
+    limine-dracut
 elif command -v dracut >/dev/null 2>&1; then
-	dracut --regenerate-all --force
+    dracut --regenerate-all --force
 elif [ -x /usr/lib/booster/regenerate_images ]; then
-	/usr/lib/booster/regenerate_images
+    /usr/lib/booster/regenerate_images
 else
-	echo 'Could not find a supported initramfs generator. Please regenerate your initramfs manually.' >&2
-	exit 1
+    echo 'Could not find a supported initramfs generator. Please regenerate your initramfs manually.' >&2
+    exit 1
 fi
