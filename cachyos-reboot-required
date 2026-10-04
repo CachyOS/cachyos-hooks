@@ -5,15 +5,52 @@
 
 kernelname="$(grep -oP '\(\K.*(?=@.*\))' /proc/version)"
 
-_notify() {
-    local header="CachyOS Update"
-    local title="Reboot recommended!"
-    local msg="Reboot is recommended due to the upgrade of core system package(s)."
+# Prints the language that messages should use, given the environment as
+# NAME=value lines. Same order as gettext: LANGUAGE (first entry), LC_ALL,
+# LC_MESSAGES, LANG. "ru_RU.UTF-8" comes out as "ru_RU".
+_language() {
+    local env="$1" var value
+    for var in LANGUAGE LC_ALL LC_MESSAGES LANG; do
+        value="$(sed -n "s/^$var=//p" <<< "$env")"
+        value="${value%%:*}"
+        value="${value%%.*}"
+        value="${value%%@*}"
+        if [ -n "$value" ]; then
+            echo "$value"
+            return
+        fi
+    done
+}
 
-    # at TTY
+# Sets header, title and msg in the given language. To add a translation,
+# add a case below; any other language gets English.
+_strings() {
+    header="CachyOS Update"
+    title="Reboot recommended!"
+    msg="Reboot is recommended due to the upgrade of core system package(s)."
+
+    case "$1" in
+        ru|ru_*)
+            header="Обновление CachyOS"
+            title="Рекомендуется перезагрузка!"
+            msg="Рекомендуется перезагрузить систему: обновлены важные системные пакеты."
+            ;;
+    esac
+}
+
+_notify() {
+    local header title msg lang
+
+    # at TTY, in the language of whoever runs pacman
+    _strings "$(_language "$(env)")"
     echo "==> INFO: $msg" >&2
 
     for user in $(users | sed 's| |\n|g' | sort | uniq); do
+        # pacman's environment is often reset (e.g. under pkexec), so take the
+        # language from the user's own session instead
+        lang="$(_language "$(systemctl --machine="${user}@.host" --user show-environment 2>/dev/null)")"
+        _strings "$lang"
+
         # See https://specifications.freedesktop.org/notification-spec/1.2/protocol.html#command-notify
         busctl --machine="${user}@.host" --user call org.freedesktop.Notifications \
             /org/freedesktop/Notifications \
