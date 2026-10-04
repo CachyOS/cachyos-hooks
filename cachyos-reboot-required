@@ -5,15 +5,47 @@
 
 kernelname="$(grep -oP '\(\K.*(?=@.*\))' /proc/version)"
 
-_notify() {
-    local header="CachyOS Update"
-    local title="Reboot recommended!"
-    local msg="Reboot is recommended due to the upgrade of core system package(s)."
+export TEXTDOMAIN=cachyos-hooks
+export TEXTDOMAINDIR=/usr/share/locale
 
-    # at TTY
+# Sets lc and language from the environment given as NAME=value lines:
+# lc is the first of LC_ALL, LC_MESSAGES, LANG that is set, language is
+# LANGUAGE. gettext then picks the translation as it would for that session.
+_locale() {
+    local env="$1" var
+    for var in LC_ALL LC_MESSAGES LANG; do
+        lc="$(sed -n "s/^$var=//p" <<< "$env")"
+        [ -n "$lc" ] && break
+    done
+    language="$(sed -n "s/^LANGUAGE=//p" <<< "$env")"
+}
+
+_gettext() {
+    LC_ALL="${lc:-C}" LANGUAGE="$language" gettext "$1"
+}
+
+# Sets header, title and msg in the language picked by _locale.
+# Translations live in po/; any language without one gets English.
+_strings() {
+    header="$(_gettext "CachyOS Update")"
+    title="$(_gettext "Reboot recommended!")"
+    msg="$(_gettext "Reboot is recommended due to the upgrade of core system package(s).")"
+}
+
+_notify() {
+    local header title msg lc language
+
+    # at TTY, in the language of whoever runs pacman
+    _locale "$(env)"
+    _strings
     echo "==> INFO: $msg" >&2
 
     for user in $(users | sed 's| |\n|g' | sort | uniq); do
+        # pacman's environment is often reset (e.g. under pkexec), so take the
+        # language from the user's own session instead
+        _locale "$(systemctl --machine="${user}@.host" --user show-environment 2>/dev/null)"
+        _strings
+
         # See https://specifications.freedesktop.org/notification-spec/1.2/protocol.html#command-notify
         busctl --machine="${user}@.host" --user call org.freedesktop.Notifications \
             /org/freedesktop/Notifications \
