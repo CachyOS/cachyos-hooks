@@ -14,8 +14,14 @@ _notify() {
     echo "==> INFO: $msg" >&2
 
     for user in $(users | sed 's| |\n|g' | sort | uniq); do
+        # If no notification daemon is running (e.g. a TTY-only login), the call below makes the bus try to
+        # start one, and an activation that never completes blocks pacman for the default 25 s timeout.
+        # Give activation a short window instead, so daemons started on demand still show the popup.
+        local timeout=25
+        busctl --machine="${user}@.host" --user status org.freedesktop.Notifications &>/dev/null || timeout=2
+
         # See https://specifications.freedesktop.org/notification-spec/1.2/protocol.html#command-notify
-        busctl --machine="${user}@.host" --user call org.freedesktop.Notifications \
+        busctl --machine="${user}@.host" --user --timeout="$timeout" call org.freedesktop.Notifications \
             /org/freedesktop/Notifications \
             org.freedesktop.Notifications  \
             Notify susssasa\{sv\}i \
