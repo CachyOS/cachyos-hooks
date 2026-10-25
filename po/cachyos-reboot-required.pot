@@ -1,0 +1,28 @@
+# Translation template for cachyos-reboot-required.
+# This file is distributed under the same license as the cachyos-hooks package.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: cachyos-reboot-required\n"
+"Report-Msgid-Bugs-To: https://github.com/CachyOS/cachyos-hooks/issues\n"
+"POT-Creation-Date: 2026-10-25 23:10+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: cachyos-reboot-required:12
+msgid "CachyOS Update"
+msgstr ""
+
+#: cachyos-reboot-required:13
+msgid "Reboot recommended!"
+msgstr ""
+
+#: cachyos-reboot-required:14
+msgid "Reboot is recommended due to the upgrade of core system package(s)."
+msgstr ""
