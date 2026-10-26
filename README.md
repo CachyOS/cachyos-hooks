@@ -12,3 +12,4 @@ cachyos-reboot-required.hook | Runs `cachyos-reboot-required` after any listed e
 lsb-release.hook | Runs `cachyos-branding` script after package `lsb-release` has been updated.
 os-release.hook | Runs `cachyos-branding` scirpt after package `filesystem` has been updated.
 update-initramfs | Helper script for autodetecting and using installed initramfs generator
+po/ | Translations of the `cachyos-reboot-required` notification (gettext domain `cachyos-reboot-required`).

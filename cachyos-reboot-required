@@ -5,10 +5,13 @@
 
 kernelname="$(grep -oP '\(\K.*(?=@.*\))' /proc/version)"
 
+# Translations for the $"..." strings below, see po/
+export TEXTDOMAIN=cachyos-reboot-required
+
 _notify() {
-    local header="CachyOS Update"
-    local title="Reboot recommended!"
-    local msg="Reboot is recommended due to the upgrade of core system package(s)."
+    local header=$"CachyOS Update"
+    local title=$"Reboot recommended!"
+    local msg=$"Reboot is recommended due to the upgrade of core system package(s)."
 
     # at TTY
     echo "==> INFO: $msg" >&2
